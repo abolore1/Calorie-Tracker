@@ -26,15 +26,30 @@ const ItemCtrl = (function () {
       return data.items;
     },
 
-    addItem:function(name,calories){
-        // return 
-        
+    addItem: function (name, calories) {
+      let ID;
+      // Create Id
+      if (data.items.length > 0) {
+        ID = data.items[data.items.length - 1].id + 1;
+      } else {
+        ID = 0;
+      }
+
+      //Calories to number
+      calories = parseInt(calories);
+
+      //Create new item
+      newItem = new Item(ID, name, calories);
+
+      //Add to items array
+      data.items.push(newItem);
+
+      return newItem;
     },
 
     logData: function () {
       return data;
     },
-
   };
 })();
 
@@ -66,14 +81,29 @@ const UICtrl = (function () {
 
     getItemInput: function () {
       return {
-        name:document.querySelector(UISelectors.itemNameInput).value,
-        calories:document.querySelector(UISelectors.itemCaloriesInput).value,
+        name: document.querySelector(UISelectors.itemNameInput).value,
+        calories: document.querySelector(UISelectors.itemCaloriesInput).value,
       };
+    },
+    // Add list item
+    addListItem: function (item) {
+        //create li
+        const li = document.createElement('li');
+        li.childElementCount = 'collection-item';
+        li.id = `item-${item.id}`;
+        li.innerHTML = `  <strong>${item.name}:</strong> <em>${item.calories} Calories</em>
+        <a href="" class="secondary-content">
+          <i class="edit-item fa fa-pencil"></i>
+        </a> `;
+        //Insert item
+        document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend',li)
     },
 
     getSelectors: function () {
       return UISelectors;
     },
+
+    
   };
 })();
 
@@ -85,18 +115,21 @@ const App = (function (ItemCtrl, UICtrl) {
     const UISelectors = UICtrl.getSelectors();
 
     //Add item event
-    document.querySelector(UISelectors.addBtn).addEventListener("click", itemAddSubmit);
+    document
+      .querySelector(UISelectors.addBtn)
+      .addEventListener("click", itemAddSubmit);
   };
 
   //Add item submit
   const itemAddSubmit = function (e) {
-
     //Get form input from UI Controller
     const input = UICtrl.getItemInput();
-    
-    if(input.name !=='' && input.calories !==''){
-       //Add item
-       const newItem = ItemCtrl.addItem(input.name,input.calories);
+
+    if (input.name !== "" && input.calories !== "") {
+      //Add item
+      const newItem = ItemCtrl.addItem(input.name, input.calories);
+      //Add to UI
+      UICtrl.addListItem(newItem);
     }
 
     e.preventDefault();
