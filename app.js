@@ -507,4 +507,4 @@ const clearAllItemClick = function(){
 })(ItemCtrl,StorageCtrl, UICtrl);
 
 // Initializing App
-App.init();
+App.init()
